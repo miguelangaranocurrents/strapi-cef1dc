@@ -752,7 +752,10 @@ const RelationModalWithContext = ({
 
   React.useLayoutEffect(() => {
     setTextValue('');
-  }, [fieldValue]);
+    // Selecting a relation clears the input, so the search must go back to unfiltered too.
+    // Otherwise the next time the dropdown opens it would still be filtered by the old term.
+    setSearchParams((s) => (s._q === '' && s.page === 1 ? s : { ...s, _q: '', page: 1 }));
+  }, [fieldValue, setSearchParams]);
 
   const handleSearch = async (search: string) => {
     setSearchParams((s) => ({ ...s, _q: search, page: 1 }));
